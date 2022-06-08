@@ -5,8 +5,14 @@ const urlCurrentWeather = "https://api.openweathermap.org/data/2.5/weather?";
 const urlForecast = "https://api.openweathermap.org/data/2.5/forecast?";
 
 const initialState = {
-  currentWeather: undefined,
-  forecast: undefined,
+  currentWeather: {
+    loaded: false,
+    data: undefined,
+  },
+  forecast: {
+    loaded: false,
+    data: undefined,
+  },
 };
 
 export const weatherSlice = createSlice({
@@ -16,16 +22,20 @@ export const weatherSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCurrentWeatherForTown.fulfilled, (state, action) => {
-        state.currentWeather = action.payload;
+        state.currentWeather.data = action.payload;
+        state.currentWeather.loaded = true;
       })
       .addCase(fetchCurrentWeatherForZipCode.fulfilled, (state, action) => {
-        state.currentWeather = action.payload;
+        state.currentWeather.data = action.payload;
+        state.currentWeather.loaded = true;
       })
       .addCase(fetchForecastForTown.fulfilled, (state, action) => {
-        state.forecast = action.payload;
+        state.forecast.data = action.payload;
+        state.forecast.loaded = true;
       })
       .addCase(fetchForecastForZipCode.fulfilled, (state, action) => {
-        state.forecast = action.payload;
+        state.forecast.data = action.payload;
+        state.forecast.loaded = true;
       });
   },
 });
