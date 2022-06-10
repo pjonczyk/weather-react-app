@@ -1,11 +1,7 @@
 import React from "react";
-import Paper from "@mui/material/Paper";
 import { useSelector } from "react-redux";
 import { Card, CardContent, Typography } from "@mui/material";
-
-function formatDate(unixTimeStap) {
-  return new Date(unixTimeStap * 1000);
-}
+import { formatDate } from "../../utilities";
 
 export default function CurrentWeatherDisplay() {
   const { loaded } = useSelector((state) => state.weather.currentWeather);
@@ -16,58 +12,49 @@ export default function CurrentWeatherDisplay() {
   if (!loaded) {
     return <></>;
   }
-  const { main, weather, wind, sys, name, dt } = currentWeatherData;
+  const { coord, main, weather, visibility, wind, sys, name, dt } =
+    currentWeatherData;
 
   const formattedDate = formatDate(dt);
   return (
-    <>
-      <Paper
-        sx={{
-          display: "flex",
-          gap: "20px",
-        }}
-      >
-        <Card sx={{ maxWidth: 345 }}>
-          <CardContent>
-            <Typography
-              variant="subtitle2"
-              component="div"
-              color="text.secondary"
-            >
-              {formattedDate.toLocaleDateString() +
-                ", " +
-                formattedDate.toLocaleTimeString()}
-            </Typography>
-            <Typography
-              variant="h5"
-              component="div"
-              color="text.secondary"
-              gutterBottom
-            >
-              {name}, {sys.country}
-            </Typography>
-            <Typography variant="h3">{Math.round(main.temp)}°C</Typography>
-            <Typography variant="body1">
-              {" "}
-              Feels like {Math.round(main.feels_like)}°C
-            </Typography>
-          </CardContent>
-        </Card>
+    <div
+      sx={{
+        display: "flex",
+        gap: "20px",
+      }}
+    >
+      <Card sx={{ maxWidth: 345 }}>
+        <CardContent>
+          <Typography>
+            Lon: {coord.lon} Lat: {coord.lat}
+          </Typography>
+          <Typography>{formattedDate.toLocaleDateString()}</Typography>
+          <Typography>{formattedDate.toLocaleTimeString()}</Typography>
 
-        <Card sx={{ maxWidth: 345 }}>
-          <CardContent>
-            <Typography
-              variant="h5"
-              component="div"
-              color="text.secondary"
-              gutterBottom
-            >
-              Wind
-            </Typography>
-            <Typography variant="h3">{wind.speed} m/s</Typography>
-          </CardContent>
-        </Card>
-      </Paper>
-    </>
+          <Typography>{name + ", " + sys.country}</Typography>
+          <Typography>Temperature: {Math.round(main.temp)}°C</Typography>
+          <Typography> Feels like {Math.round(main.feels_like)}°C</Typography>
+          {weather.map((weatherElement, i) => {
+            return (
+              <div key={i}>
+                <Typography>{weatherElement.main}</Typography>
+                <Typography>{weatherElement.description}</Typography>
+              </div>
+            );
+          })}
+          <Typography>Visbility: {(visibility / 1000).toFixed(1)}km</Typography>
+          <Typography>Wind: {wind.speed}m/s</Typography>
+          <Typography>Pressure: {main.pressure}hPa</Typography>
+          <Typography>Humidity: {main.humidity}%</Typography>
+          <Typography>Cloudiness: {}%</Typography>
+          <Typography>
+            Sunrise: {formatDate(sys.sunrise).toLocaleTimeString()}
+          </Typography>
+          <Typography>
+            Sunset: {formatDate(sys.sunset).toLocaleTimeString()}
+          </Typography>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
