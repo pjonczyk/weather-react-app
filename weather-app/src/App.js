@@ -4,13 +4,13 @@ import WeatherDisplay from "./modules/WeatherDisplay/WeatherDisplay";
 
 function App() {
   return (
-    <>
-      <Typography variant="h2" component="div" gutterBottom>
+    <div style={{ margin: "auto", width: "50%" }}>
+      <Typography sx={{ textAlign: "center" }} variant="h2" component="div">
         The Weather App
       </Typography>
       <Search />
       <WeatherDisplay />
-    </>
+    </div>
   );
 }
 

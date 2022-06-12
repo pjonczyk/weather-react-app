@@ -26,8 +26,13 @@ const month = [
 
 function groupByDay(listData) {
   let groupedData = new Map();
+  const today = new Date().toISOString().slice(0, 10);
+
   listData.forEach((data, i) => {
     const day = data.dt_txt.split(" ")[0];
+    if (today === day) {
+      return;
+    }
     if (groupedData.has(day)) {
       let dayData = groupedData.get(day);
       dayData.push(data);
@@ -50,15 +55,44 @@ function generateAccordionSummaryDateText(dayData) {
   );
 }
 
-function generateDayTempMinMax(dayData) {
+function generateAverageDataPerDay(dayData) {
+  let averageWinds = 0;
+  let averagePressure = 0;
+  let averageHumidity = 0;
+  let noonDescription;
   let minTemp = Number.MAX_VALUE;
   let maxTemp = Number.MIN_VALUE;
-  dayData.forEach((data) => {
+
+  dayData.forEach((data, i) => {
+    console.log(i);
+    averageWinds += data.wind.speed;
+    averagePressure += data.main.pressure;
+    averageHumidity += data.main.humidity;
     const currentTemp = data.main.temp;
-    minTemp > currentTemp && (minTemp = currentTemp);
-    maxTemp < currentTemp && (maxTemp = currentTemp);
+    if (minTemp > currentTemp) {
+      minTemp = currentTemp;
+    }
+    if (maxTemp < currentTemp) {
+      maxTemp = currentTemp;
+    }
+    if (i === 4) {
+      noonDescription = data.weather.description;
+    }
   });
-  return Math.round(maxTemp) + " / " + Math.round(minTemp) + "°C";
+
+  const datapoints = dayData.length;
+  averageWinds = (averageWinds / datapoints).toFixed(2);
+  averagePressure = Math.round(averagePressure / datapoints);
+  averageHumidity = Math.round(averageHumidity / datapoints);
+
+  return {
+    averageWinds: averageWinds,
+    averagePressure: averagePressure,
+    averageHumidity: averageHumidity,
+    noonDescription: noonDescription,
+    minTemp: Math.round(minTemp),
+    maxTemp: Math.round(maxTemp),
+  };
 }
 
 export default function ForecastDisplay() {
@@ -81,7 +115,14 @@ export default function ForecastDisplay() {
         const accordionSummaryDate = generateAccordionSummaryDateText(
           dayData[0]
         );
-        const minMaxTemps = generateDayTempMinMax(dayData);
+        const {
+          averageWinds,
+          averagePressure,
+          averageHumidity,
+          noonDescription,
+          maxTemp,
+          minTemp,
+        } = generateAverageDataPerDay(dayData);
 
         return (
           <div key={key}>
@@ -90,15 +131,19 @@ export default function ForecastDisplay() {
                 expandIcon={<ExpandMoreIcon />}
                 id={"panel" + key + "bh-header"}
               >
-                <Typography>
-                  {accordionSummaryDate + " " + minMaxTemps}
+                <Typography sx={{ width: "66%", flexShrink: 0 }}>
+                  {accordionSummaryDate}
                 </Typography>
+                <Typography>{maxTemp + " / " + minTemp + "°C"}</Typography>
               </AccordionSummary>
               <AccordionDetails>
+                <Typography>{noonDescription}</Typography>
                 <Typography>
-                  Nulla facilisi. Phasellus sollicitudin nulla et quam mattis
-                  feugiat. Aliquam eget maximus est, id dignissim quam.
+                  The high will be {maxTemp}°C, the low will be {minTemp}°C.
                 </Typography>
+                <Typography>Wind: {averageWinds}m/s</Typography>
+                <Typography>Pressure: {averagePressure}hPa</Typography>
+                <Typography>Humidity: {averageHumidity}%</Typography>
               </AccordionDetails>
             </Accordion>
           </div>
