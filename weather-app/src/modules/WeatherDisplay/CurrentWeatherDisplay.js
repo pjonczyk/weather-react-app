@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Card, CardContent, Paper, Typography } from "@mui/material";
 import { formatDate } from "../../utilities";
 
 export default function CurrentWeatherDisplay() {
@@ -17,44 +17,44 @@ export default function CurrentWeatherDisplay() {
 
   const formattedDate = formatDate(dt);
   return (
-    <div
-      sx={{
-        display: "flex",
-        gap: "20px",
-      }}
-    >
-      <Card sx={{ maxWidth: 345 }}>
-        <CardContent>
-          <Typography>
-            Lon: {coord.lon} Lat: {coord.lat}
-          </Typography>
-          <Typography>{formattedDate.toLocaleDateString()}</Typography>
-          <Typography>{formattedDate.toLocaleTimeString()}</Typography>
-
-          <Typography>{name + ", " + sys.country}</Typography>
-          <Typography>Temperature: {Math.round(main.temp)}°C</Typography>
-          <Typography> Feels like {Math.round(main.feels_like)}°C</Typography>
-          {weather.map((weatherElement, i) => {
-            return (
-              <div key={i}>
-                <Typography>{weatherElement.main}</Typography>
-                <Typography>{weatherElement.description}</Typography>
-              </div>
-            );
-          })}
-          <Typography>Visbility: {(visibility / 1000).toFixed(1)}km</Typography>
-          <Typography>Wind: {wind.speed}m/s</Typography>
-          <Typography>Pressure: {main.pressure}hPa</Typography>
-          <Typography>Humidity: {main.humidity}%</Typography>
-          <Typography>Cloudiness: {}%</Typography>
-          <Typography>
-            Sunrise: {formatDate(sys.sunrise).toLocaleTimeString()}
-          </Typography>
-          <Typography>
-            Sunset: {formatDate(sys.sunset).toLocaleTimeString()}
-          </Typography>
-        </CardContent>
-      </Card>
-    </div>
+    <Card sx={{ flexGrow: 1 }}>
+      <CardContent>
+        <Typography variant="subtitle1" component="div">
+          {formattedDate.toLocaleDateString() +
+            ", " +
+            formattedDate.toLocaleTimeString()}
+        </Typography>
+        <Typography variant="h4" component="div" gutterBottom>
+          {name + ", " + sys.country}
+        </Typography>
+        <Typography variant="h3" component="div">
+          {Math.round(main.temp)}°C
+        </Typography>
+        <Typography gutterBottom>
+          {"Feels like " +
+            Math.round(main.feels_like) +
+            "°C. " +
+            weather.map((weatherElement, i) => {
+              return weatherElement.main + ". " + weatherElement.description;
+            })}
+        </Typography>
+        <Typography sx={{ width: "50%" }}>
+          Visibility: {(visibility / 1000).toFixed(1)}km
+        </Typography>
+        <Typography sx={{ width: "50%" }}>Wind: {wind.speed}m/s</Typography>
+        <Typography>Pressure: {main.pressure}hPa</Typography>
+        <Typography>Humidity: {main.humidity}%</Typography>
+        <Typography>Cloudiness: {}%</Typography>
+        <Typography>
+          Sunrise: {formatDate(sys.sunrise).toLocaleTimeString()}
+        </Typography>
+        <Typography>
+          Sunset: {formatDate(sys.sunset).toLocaleTimeString()}
+        </Typography>
+        <Typography variant="body2" component="div">
+          Lon: {coord.lon} Lat: {coord.lat}
+        </Typography>
+      </CardContent>
+    </Card>
   );
 }

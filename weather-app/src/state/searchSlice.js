@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  selectedTown: "Search…",
+  selectedTown: undefined,
 };
 
 export const searchSlice = createSlice({

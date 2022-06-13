@@ -1,12 +1,21 @@
-import { Typography } from "@mui/material";
+import { Divider, Typography } from "@mui/material";
 import Search from "./modules/Search/Search";
 import WeatherDisplay from "./modules/WeatherDisplay/WeatherDisplay";
 
+const rootStyle = {
+  height: "100vh",
+  minHeight: "100vh",
+};
+
 function App() {
   return (
-    <div style={{ margin: "auto", width: "50%" }}>
-      <Typography sx={{ textAlign: "center" }} variant="h2" component="div">
-        The Weather App
+    <div style={rootStyle}>
+      <Typography
+        sx={{ textAlign: "center", mx: "auto", width: "60%", my: "10px" }}
+        variant="h3"
+        component="div"
+      >
+        Weather Forecast
       </Typography>
       <Search />
       <WeatherDisplay />

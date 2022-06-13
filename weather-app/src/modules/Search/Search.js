@@ -10,6 +10,12 @@ import {
   fetchForecastForZipCode,
 } from "../../state/weatherSlice";
 
+const divStyle = {
+  display: "flex",
+  margin: "auto",
+  width: "60%",
+};
+
 export default function Search() {
   const selectedTown = useSelector((state) => state.search.selectedTown);
   const dispatch = useDispatch();
@@ -29,18 +35,28 @@ export default function Search() {
   };
 
   return (
-    <TextField
-      value={selectedTown}
-      onChange={onChange}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton onClick={onSubmit}>
-              <SearchIcon />
-            </IconButton>
-          </InputAdornment>
-        ),
-      }}
-    />
+    <div style={divStyle}>
+      <TextField
+        sx={{ my: "20px" }}
+        fullWidth
+        value={selectedTown}
+        onChange={onChange}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            onSubmit(e);
+          }
+        }}
+        placeholder={"Search for places ..."}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={onSubmit}>
+                <SearchIcon />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+    </div>
   );
 }

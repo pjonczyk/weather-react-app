@@ -110,7 +110,7 @@ export default function ForecastDisplay() {
 
   const groupedByDayDataMap = groupByDay(forecastData.list);
   return (
-    <div>
+    <div style={{ flexGrow: 1 }}>
       {Array.from(groupedByDayDataMap.values()).map((dayData, key) => {
         const accordionSummaryDate = generateAccordionSummaryDateText(
           dayData[0]
@@ -131,10 +131,12 @@ export default function ForecastDisplay() {
                 expandIcon={<ExpandMoreIcon />}
                 id={"panel" + key + "bh-header"}
               >
-                <Typography sx={{ width: "66%", flexShrink: 0 }}>
+                <Typography sx={{ width: "50%", flexShrink: 0 }}>
                   {accordionSummaryDate}
                 </Typography>
-                <Typography>{maxTemp + " / " + minTemp + "°C"}</Typography>
+                <Typography align="right" sx={{ width: "45%", flexShrink: 0 }}>
+                  {maxTemp + " / " + minTemp + "°C"}
+                </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>{noonDescription}</Typography>
