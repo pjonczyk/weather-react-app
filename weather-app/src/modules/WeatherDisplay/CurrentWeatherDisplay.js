@@ -1,6 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Card, CardContent, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Divider,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { formatDate } from "../../utilities";
 
 export default function CurrentWeatherDisplay() {
@@ -17,8 +25,8 @@ export default function CurrentWeatherDisplay() {
 
   const formattedDate = formatDate(dt);
   return (
-    <Card sx={{ flexGrow: 1 }}>
-      <CardContent>
+    <Card sx={{ display: "flex" }}>
+      <CardContent sx={{ flex: 1, display: "flex", flexFlow: "column wrap" }}>
         <Typography variant="subtitle1" component="div">
           {formattedDate.toLocaleDateString() +
             ", " +
@@ -38,22 +46,56 @@ export default function CurrentWeatherDisplay() {
               return weatherElement.main + ". " + weatherElement.description;
             })}
         </Typography>
-        <Typography sx={{ width: "50%" }}>
-          Visibility: {(visibility / 1000).toFixed(1)}km
-        </Typography>
-        <Typography sx={{ width: "50%" }}>Wind: {wind.speed}m/s</Typography>
-        <Typography>Pressure: {main.pressure}hPa</Typography>
-        <Typography>Humidity: {main.humidity}%</Typography>
-        <Typography>Cloudiness: {}%</Typography>
-        <Typography>
-          Sunrise: {formatDate(sys.sunrise).toLocaleTimeString()}
-        </Typography>
-        <Typography>
-          Sunset: {formatDate(sys.sunset).toLocaleTimeString()}
-        </Typography>
-        <Typography variant="body2" component="div">
-          Lon: {coord.lon} Lat: {coord.lat}
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            gap: "20px",
+            flexGrow: "auto",
+          }}
+        >
+          <Divider orientation="vertical" flexItem />
+          <Grid container spacing={2} columns={10}>
+            <Grid item xs={5}>
+              <Typography>
+                Visibility: {(visibility / 1000).toFixed(1)}km
+              </Typography>
+            </Grid>
+
+            <Grid item xs={5}>
+              <Typography>Wind: {wind.speed}m/s</Typography>
+            </Grid>
+
+            <Grid item xs={5}>
+              <Typography>Pressure: {main.pressure}hPa</Typography>
+            </Grid>
+
+            <Grid item xs={5}>
+              <Typography>Humidity: {main.humidity}%</Typography>
+            </Grid>
+
+            <Grid item xs={5}>
+              <Typography>Cloudiness: {}%</Typography>
+            </Grid>
+
+            <Grid item xs={5}>
+              <Typography>
+                Sunrise: {formatDate(sys.sunrise).toLocaleTimeString()}
+              </Typography>
+            </Grid>
+
+            <Grid item xs={5}>
+              <Typography>
+                Sunset: {formatDate(sys.sunset).toLocaleTimeString()}
+              </Typography>
+            </Grid>
+
+            <Grid item xs={5}>
+              <Typography variant="body2" component="div">
+                Lon: {coord.lon} Lat: {coord.lat}
+              </Typography>
+            </Grid>
+          </Grid>
+        </Box>
       </CardContent>
     </Card>
   );
