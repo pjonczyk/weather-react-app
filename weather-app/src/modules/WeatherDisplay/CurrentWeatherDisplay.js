@@ -6,7 +6,6 @@ import {
   CardContent,
   Divider,
   Grid,
-  Paper,
   Typography,
 } from "@mui/material";
 import { formatDate } from "../../utilities";
@@ -25,78 +24,118 @@ export default function CurrentWeatherDisplay() {
 
   const formattedDate = formatDate(dt);
   return (
-    <Card sx={{ display: "flex" }}>
-      <CardContent sx={{ flex: 1, display: "flex", flexFlow: "column wrap" }}>
-        <Typography variant="subtitle1" component="div">
-          {formattedDate.toLocaleDateString() +
-            ", " +
-            formattedDate.toLocaleTimeString()}
-        </Typography>
-        <Typography variant="h4" component="div" gutterBottom>
-          {name + ", " + sys.country}
-        </Typography>
-        <Typography variant="h3" component="div">
-          {Math.round(main.temp)}°C
-        </Typography>
-        <Typography gutterBottom>
-          {"Feels like " +
-            Math.round(main.feels_like) +
-            "°C. " +
-            weather.map((weatherElement, i) => {
-              return weatherElement.main + ". " + weatherElement.description;
-            })}
-        </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            gap: "20px",
-            flexGrow: "auto",
-          }}
-        >
-          <Divider orientation="vertical" flexItem />
-          <Grid container spacing={2} columns={10}>
-            <Grid item xs={5}>
-              <Typography>
-                Visibility: {(visibility / 1000).toFixed(1)}km
+    <Box sx={{ mt: "30px" }}>
+      <Typography variant="h3" gutterBottom>
+        Current
+      </Typography>
+      <Card sx={{ display: "flex", maxWidth: "50%" }}>
+        <CardContent sx={{ flex: 1, display: "flex", flexFlow: "column wrap" }}>
+          <Box sx={{ display: "flex" }}>
+            <Box>
+              <Typography variant="subtitle1" component="div">
+                {formattedDate.toLocaleDateString() +
+                  ", " +
+                  formattedDate.toLocaleTimeString()}
               </Typography>
-            </Grid>
-
-            <Grid item xs={5}>
-              <Typography>Wind: {wind.speed}m/s</Typography>
-            </Grid>
-
-            <Grid item xs={5}>
-              <Typography>Pressure: {main.pressure}hPa</Typography>
-            </Grid>
-
-            <Grid item xs={5}>
-              <Typography>Humidity: {main.humidity}%</Typography>
-            </Grid>
-
-            <Grid item xs={5}>
-              <Typography>Cloudiness: {}%</Typography>
-            </Grid>
-
-            <Grid item xs={5}>
-              <Typography>
-                Sunrise: {formatDate(sys.sunrise).toLocaleTimeString()}
+              <Typography variant="h4" component="div" gutterBottom>
+                {name + ", " + sys.country}
               </Typography>
-            </Grid>
-
-            <Grid item xs={5}>
-              <Typography>
-                Sunset: {formatDate(sys.sunset).toLocaleTimeString()}
+              <Typography variant="h3" component="div">
+                {Math.round(main.temp)}°C
               </Typography>
-            </Grid>
-
-            <Grid item xs={5}>
-              <Typography variant="body2" component="div">
-                Lon: {coord.lon} Lat: {coord.lat}
+              <Typography gutterBottom>
+                {"Feels like " +
+                  Math.round(main.feels_like) +
+                  "°C. " +
+                  weather.map((weatherElement, i) => {
+                    return (
+                      weatherElement.main + ". " + weatherElement.description
+                    );
+                  })}
               </Typography>
+            </Box>
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <img
+                src={
+                  "http://openweathermap.org/img/wn/" +
+                  weather[0].icon +
+                  "@2x.png"
+                }
+                alt={"Current Weather"}
+                style={{
+                  width: "150px",
+                  height: "150px",
+                }}
+              />
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              gap: "20px",
+              mt: "20px",
+            }}
+          >
+            <Divider orientation="vertical" flexItem />
+            <Grid container spacing={1} columns={10} sx={{}}>
+              <Grid item xs={5}>
+                <Typography variant="body2" component="div">
+                  Visibility: {(visibility / 1000).toFixed(1)}km
+                </Typography>
+              </Grid>
+
+              <Grid item xs={5}>
+                <Typography variant="body2" component="div">
+                  Wind: {wind.speed}m/s
+                </Typography>
+              </Grid>
+
+              <Grid item xs={5}>
+                <Typography variant="body2" component="div">
+                  Pressure: {main.pressure}hPa
+                </Typography>
+              </Grid>
+
+              <Grid item xs={5}>
+                <Typography variant="body2" component="div">
+                  Humidity: {main.humidity}%
+                </Typography>
+              </Grid>
+
+              <Grid item xs={5}>
+                <Typography variant="body2" component="div">
+                  Cloudiness: {}%
+                </Typography>
+              </Grid>
+
+              <Grid item xs={5}>
+                <Typography variant="body2" component="div">
+                  Sunrise: {formatDate(sys.sunrise).toLocaleTimeString()}
+                </Typography>
+              </Grid>
+
+              <Grid item xs={5}>
+                <Typography variant="body2" component="div">
+                  Sunset: {formatDate(sys.sunset).toLocaleTimeString()}
+                </Typography>
+              </Grid>
+
+              <Grid item xs={5}>
+                <Typography variant="body2" component="div">
+                  Lat: {coord.lat} Lon: {coord.lon}
+                </Typography>
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
-      </CardContent>
-    </Card>
+          </Box>
+        </CardContent>
+      </Card>
+    </Box>
   );
 }

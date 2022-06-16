@@ -13,7 +13,6 @@ import {
 const divStyle = {
   display: "flex",
   margin: "auto",
-  width: "60%",
 };
 
 export default function Search() {
@@ -37,7 +36,7 @@ export default function Search() {
   return (
     <div style={divStyle}>
       <TextField
-        sx={{ my: "20px" }}
+        sx={{ my: "5px" }}
         fullWidth
         value={selectedTown}
         onChange={onChange}

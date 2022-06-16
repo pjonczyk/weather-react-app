@@ -1,12 +1,11 @@
-import { Accordion } from "@mui/material";
+import { Accordion, Box } from "@mui/material";
 import React from "react";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useSelector } from "react-redux";
-import { formatDate } from "../../utilities";
-
+import { formatDate, capitalizeString } from "../../utilities";
 const weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const month = [
   "Jan",
@@ -62,9 +61,9 @@ function generateAverageDataPerDay(dayData) {
   let noonDescription;
   let minTemp = Number.MAX_VALUE;
   let maxTemp = Number.MIN_VALUE;
+  let weatherIcondId = "";
 
   dayData.forEach((data, i) => {
-    console.log(i);
     averageWinds += data.wind.speed;
     averagePressure += data.main.pressure;
     averageHumidity += data.main.humidity;
@@ -76,7 +75,10 @@ function generateAverageDataPerDay(dayData) {
       maxTemp = currentTemp;
     }
     if (i === 4) {
-      noonDescription = data.weather.description;
+      const firstweather = data.weather[0];
+      noonDescription =
+        firstweather.main + ". " + capitalizeString(firstweather.description);
+      weatherIcondId = firstweather.icon;
     }
   });
 
@@ -92,11 +94,12 @@ function generateAverageDataPerDay(dayData) {
     noonDescription: noonDescription,
     minTemp: Math.round(minTemp),
     maxTemp: Math.round(maxTemp),
+    weatherIcondId: weatherIcondId,
   };
 }
 
 export default function ForecastDisplay() {
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(0);
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -110,7 +113,10 @@ export default function ForecastDisplay() {
 
   const groupedByDayDataMap = groupByDay(forecastData.list);
   return (
-    <div style={{ flexGrow: 1 }}>
+    <Box sx={{ mt: "20px" }}>
+      <Typography variant="h3" gutterBottom>
+        Forecast
+      </Typography>
       {Array.from(groupedByDayDataMap.values()).map((dayData, key) => {
         const accordionSummaryDate = generateAccordionSummaryDateText(
           dayData[0]
@@ -122,35 +128,53 @@ export default function ForecastDisplay() {
           noonDescription,
           maxTemp,
           minTemp,
+          weatherIcondId,
         } = generateAverageDataPerDay(dayData);
 
         return (
-          <div key={key}>
-            <Accordion expanded={expanded === key} onChange={handleChange(key)}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                id={"panel" + key + "bh-header"}
-              >
-                <Typography sx={{ width: "50%", flexShrink: 0 }}>
+          <Accordion
+            key={key}
+            expanded={expanded === key}
+            onChange={handleChange(key)}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              id={"panel" + key + "bh-header"}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+                <Typography sx={{ flexShrink: 0 }}>
                   {accordionSummaryDate}
                 </Typography>
-                <Typography align="right" sx={{ width: "45%", flexShrink: 0 }}>
+                <img
+                  src={
+                    "http://openweathermap.org/img/wn/" +
+                    weatherIcondId +
+                    "@2x.png"
+                  }
+                  alt={"Current Weather"}
+                  style={{
+                    width: "35px",
+                    height: "35px",
+                    marginLeft: "auto",
+                  }}
+                />
+                <Typography align="right" sx={{ mx: "25px" }}>
                   {maxTemp + " / " + minTemp + "°C"}
                 </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography>{noonDescription}</Typography>
-                <Typography>
-                  The high will be {maxTemp}°C, the low will be {minTemp}°C.
-                </Typography>
-                <Typography>Wind: {averageWinds}m/s</Typography>
-                <Typography>Pressure: {averagePressure}hPa</Typography>
-                <Typography>Humidity: {averageHumidity}%</Typography>
-              </AccordionDetails>
-            </Accordion>
-          </div>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>{noonDescription}</Typography>
+              <Typography>
+                The high will be {maxTemp}°C, the low will be {minTemp}°C.
+              </Typography>
+              <Typography>Wind: {averageWinds}m/s</Typography>
+              <Typography>Pressure: {averagePressure}hPa</Typography>
+              <Typography>Humidity: {averageHumidity}%</Typography>
+            </AccordionDetails>
+          </Accordion>
         );
       })}
-    </div>
+    </Box>
   );
 }
