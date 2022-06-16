@@ -74,7 +74,7 @@ function generateAverageDataPerDay(dayData) {
     if (maxTemp < currentTemp) {
       maxTemp = currentTemp;
     }
-    if (i === 4) {
+    if (i <= 4) {
       const firstweather = data.weather[0];
       noonDescription =
         firstweather.main + ". " + capitalizeString(firstweather.description);
@@ -105,9 +105,9 @@ export default function ForecastDisplay() {
   };
 
   const forecastData = useSelector((state) => state.weather.forecast.data);
-  const { loaded } = useSelector((state) => state.weather.forecast);
+  const { loaded, error } = useSelector((state) => state.weather.forecast);
 
-  if (!loaded) {
+  if (!loaded || error) {
     return <></>;
   }
 

@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import Footer from "./modules/Footer/footer";
+import ErrorSnackbar from "./modules/ErrorSnackbar";
 import Search from "./modules/Search/Search";
 import CurrentWeatherDisplay from "./modules/WeatherDisplay/CurrentWeatherDisplay";
 import ForecastDisplay from "./modules/WeatherDisplay/ForecastDisplay";
@@ -11,7 +11,7 @@ const rootStyle = {
 };
 
 const boxStyle = {
-  width: "40%",
+  width: "60%",
   m: "auto",
   mt: "0",
 };
@@ -35,8 +35,9 @@ function App() {
         <Search />
         <CurrentWeatherDisplay />
         <ForecastDisplay />
+        <Box sx={{ height: "200px", width: "100%" }}></Box>
       </Box>
-      <Footer />
+      <ErrorSnackbar />
     </Box>
   );
 }

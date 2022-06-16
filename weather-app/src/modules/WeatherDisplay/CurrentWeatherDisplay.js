@@ -11,12 +11,14 @@ import {
 import { formatDate } from "../../utilities";
 
 export default function CurrentWeatherDisplay() {
-  const { loaded } = useSelector((state) => state.weather.currentWeather);
+  const { loaded, error } = useSelector(
+    (state) => state.weather.currentWeather
+  );
   const currentWeatherData = useSelector(
     (state) => state.weather.currentWeather.data
   );
 
-  if (!loaded) {
+  if (!loaded || error) {
     return <></>;
   }
   const { coord, main, weather, visibility, wind, sys, name, dt } =

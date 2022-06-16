@@ -7,10 +7,12 @@ const urlForecast = "https://api.openweathermap.org/data/2.5/forecast?";
 const initialState = {
   currentWeather: {
     loaded: false,
+    error: false,
     data: undefined,
   },
   forecast: {
     loaded: false,
+    error: false,
     data: undefined,
   },
 };
@@ -18,7 +20,14 @@ const initialState = {
 export const weatherSlice = createSlice({
   name: "weather",
   initialState,
-  reducers: {},
+  reducers: {
+    resetWeather: (state, action) => {
+      state.currentWeather.error = false;
+      state.currentWeather.loaded = false;
+      state.forecast.error = false;
+      state.forecast.loaded = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCurrentWeatherForTown.fulfilled, (state, action) => {
@@ -36,11 +45,24 @@ export const weatherSlice = createSlice({
       .addCase(fetchForecastForZipCode.fulfilled, (state, action) => {
         state.forecast.data = action.payload;
         state.forecast.loaded = true;
+      })
+      .addCase(fetchCurrentWeatherForTown.rejected, (state, action) => {
+        state.currentWeather.error = true;
+      })
+      .addCase(fetchCurrentWeatherForZipCode.rejected, (state, action) => {
+        state.currentWeather.error = true;
+      })
+      .addCase(fetchForecastForTown.rejected, (state, action) => {
+        state.forecast.error = true;
+      })
+      .addCase(fetchForecastForZipCode.rejected, (state, action) => {
+        state.forecast.error = true;
       });
   },
 });
 
-export const { increment, decrement, incrementByAmount } = weatherSlice.actions;
+export const { increment, decrement, incrementByAmount, resetWeather } =
+  weatherSlice.actions;
 
 export default weatherSlice.reducer;
 
@@ -49,8 +71,13 @@ export const fetchCurrentWeatherForTown = createAsyncThunk(
   async (town, thunkAPI) => {
     const response = await fetch(
       urlCurrentWeather + "q=" + town + ",de&units=metric&appid=" + apiKey
-    ).then((data) => data.json());
-    return response;
+    );
+    if (!response.ok) {
+      const err = new Error("Not 2xx response");
+      err.response = response;
+      throw err;
+    }
+    return await response.json();
   }
 );
 
@@ -59,8 +86,13 @@ export const fetchCurrentWeatherForZipCode = createAsyncThunk(
   async (zipCode, thunkAPI) => {
     const response = await fetch(
       urlCurrentWeather + "zip=" + zipCode + ",de&units=metric&appid=" + apiKey
-    ).then((data) => data.json());
-    return response;
+    );
+    if (!response.ok) {
+      const err = new Error("Not 2xx response");
+      err.response = response;
+      throw err;
+    }
+    return await response.json();
   }
 );
 
@@ -69,8 +101,13 @@ export const fetchForecastForTown = createAsyncThunk(
   async (town, thunkAPI) => {
     const response = await fetch(
       urlForecast + "q=" + town + ",de&units=metric&appid=" + apiKey
-    ).then((data) => data.json());
-    return response;
+    );
+    if (!response.ok) {
+      const err = new Error("Not 2xx response");
+      err.response = response;
+      throw err;
+    }
+    return await response.json();
   }
 );
 
@@ -79,7 +116,12 @@ export const fetchForecastForZipCode = createAsyncThunk(
   async (zipCode, thunkAPI) => {
     const response = await fetch(
       urlForecast + "zip=" + zipCode + ",de&units=metric&appid=" + apiKey
-    ).then((data) => data.json());
-    return response;
+    );
+    if (!response.ok) {
+      const err = new Error("Not 2xx response");
+      err.response = response;
+      throw err;
+    }
+    return await response.json();
   }
 );
